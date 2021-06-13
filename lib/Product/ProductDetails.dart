@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intern/LoginScreens/ZoomScreen/item.dart';
+import 'package:intern/LoginScreens/setting2.dart';
+import 'package:intern/HomeScreen/home.dart';
 
 // ignore: must_be_immutable
 class ProductDetails extends StatefulWidget {
@@ -20,6 +22,11 @@ class ProductDetails extends StatefulWidget {
 }
 
 class _ProductDetailsState extends State<ProductDetails> {
+  final TextEditingController __emailController = TextEditingController();
+  final TextEditingController __pswrdController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  bool _autoValidate = false;
+
   @override
   Widget build(BuildContext context) {
     // MediaQuery Screen Data to keep balance between the height used for screen
@@ -50,8 +57,9 @@ class _ProductDetailsState extends State<ProductDetails> {
               height: screenData.height * 0.4,
               padding: EdgeInsets.zero,
               child: InkWell(
-                onTap: (){
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => itemPage()));
+                onTap: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => itemPage()));
                 },
                 child: Image.asset(
                   widget.data.getImage().toString(),
@@ -209,7 +217,118 @@ class _ProductDetailsState extends State<ProductDetails> {
         Expanded(
           child: ElevatedButton(
             // ************** On Pressed Event *****************
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      content: Stack(
+                        overflow: Overflow.visible,
+                        children: <Widget>[
+                          Positioned(
+                            right: -40.0,
+                            top: -40.0,
+                            child: InkResponse(
+                              onTap: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: CircleAvatar(
+                                child: Icon(Icons.close),
+                                backgroundColor: Colors.red,
+                              ),
+                            ),
+                          ),
+                          Form(
+                            key: _formKey,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: TextFormField(
+                                    controller: __emailController,
+
+                                    /* Email Validator Function */
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return '*required';
+                                      }
+                                      return null;
+                                    },
+                                    keyboardType: TextInputType.emailAddress,
+                                    style: TextStyle(
+                                      color: Colors.deepPurple,
+                                      fontFamily: "OpenSans",
+                                    ),
+                                    decoration: InputDecoration(
+                                      errorStyle: kErrorStyle,
+                                      border: InputBorder.none,
+                                      focusedBorder: kBorderStyle,
+                                      enabledBorder: kBorderStyle,
+                                      suffixIcon: Icon(
+                                        Icons.email,
+                                        color: Colors.deepPurpleAccent,
+                                      ),
+                                      hintText: "Enter you Email",
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: TextFormField(
+                                    controller: __pswrdController,
+
+                                    /* Validator Function for Password */
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return '*required';
+                                      }
+                                      return null;
+                                    },
+                                    obscureText: true,
+                                    keyboardType: TextInputType.visiblePassword,
+                                    style: TextStyle(
+                                      color: Colors.deepPurple,
+                                      fontFamily: "OpenSans",
+                                    ),
+                                    decoration: InputDecoration(
+                                      errorStyle: kErrorStyle,
+                                      border: InputBorder.none,
+                                      focusedBorder: kBorderStyle,
+                                      enabledBorder: kBorderStyle,
+                                      suffixIcon: Icon(
+                                        Icons.lock,
+                                        color: Colors.deepPurpleAccent,
+                                      ),
+                                      hintText: "Enter you Password",
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: RaisedButton(
+                                    child: Text("Submit"),
+                                    color: Colors.white,
+                                    onPressed: () {
+                                      if (_formKey.currentState!.validate()) {
+                                        Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => Home()));
+                                      } else {
+                                        setState(() => _autoValidate = true);
+                                      }
+                                    },
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  });
+            },
             child: Row(
               children: <Widget>[
                 Expanded(child: Text("Buy Now")),
@@ -219,7 +338,7 @@ class _ProductDetailsState extends State<ProductDetails> {
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
               elevation: MaterialStateProperty.all(5.0),
-              fixedSize: MaterialStateProperty.all<Size>(Size.fromHeight(50)),
+              //fixedSize: MaterialStateProperty.all<Size>(Size.fromHeight(50)),
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
@@ -232,6 +351,7 @@ class _ProductDetailsState extends State<ProductDetails> {
           child: ElevatedButton(
             // ****************** On Pressed Event **************
             onPressed: () {},
+
             child: Row(
               children: <Widget>[
                 Expanded(child: Text("Add to Cart")),
@@ -241,7 +361,7 @@ class _ProductDetailsState extends State<ProductDetails> {
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
               elevation: MaterialStateProperty.all(5.0),
-              fixedSize: MaterialStateProperty.all<Size>(Size.fromHeight(50)),
+              //fixedSize: MaterialStateProperty.all<Size>(Size.fromHeight(50)),
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
